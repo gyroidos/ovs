@@ -2036,7 +2036,8 @@ static int ovs_ct_limit_set_zone_limit(struct nlattr *nla_zone_limit,
 		} else {
 			struct ovs_ct_limit *ct_limit;
 
-			ct_limit = kmalloc(sizeof(*ct_limit), GFP_KERNEL);
+			ct_limit = kmalloc(sizeof(*ct_limit),
+					   GFP_KERNEL_ACCOUNT);
 			if (!ct_limit)
 				return -ENOMEM;
 
@@ -2312,8 +2313,9 @@ static struct genl_ops ct_limit_genl_ops[] = {
 #ifdef HAVE_GENL_VALIDATE_FLAGS
 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
 #endif
-		.flags = GENL_ADMIN_PERM, /* Requires CAP_NET_ADMIN
-					   * privilege. */
+		.flags = GENL_UNS_ADMIN_PERM, /* Requires CAP_NET_ADMIN
+					       * privilege.
+					       */
 #ifdef HAVE_GENL_OPS_POLICY
 		.policy = ct_limit_policy,
 #endif
@@ -2323,8 +2325,9 @@ static struct genl_ops ct_limit_genl_ops[] = {
 #ifdef HAVE_GENL_VALIDATE_FLAGS
 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
 #endif
-		.flags = GENL_ADMIN_PERM, /* Requires CAP_NET_ADMIN
-					   * privilege. */
+		.flags = GENL_UNS_ADMIN_PERM, /* Requires CAP_NET_ADMIN
+					       * privilege.
+					       */
 #ifdef HAVE_GENL_OPS_POLICY
 		.policy = ct_limit_policy,
 #endif
