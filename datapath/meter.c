@@ -218,7 +218,7 @@ static struct dp_meter *dp_meter_create(struct nlattr **a)
 			return ERR_PTR(-EINVAL);
 
 	/* Allocate and set up the meter before locking anything. */
-	meter = kzalloc(struct_size(meter, bands, n_bands), GFP_KERNEL);
+	meter = kzalloc(struct_size(meter, bands, n_bands), GFP_KERNEL_ACCOUNT);
 	if (!meter)
 		return ERR_PTR(-ENOMEM);
 
@@ -553,9 +553,9 @@ static struct genl_ops dp_meter_genl_ops[] = {
 #ifdef HAVE_GENL_VALIDATE_FLAGS
 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
 #endif
-		.flags = GENL_ADMIN_PERM, /* Requires CAP_NET_ADMIN
-					   *  privilege.
-					   */
+		.flags = GENL_UNS_ADMIN_PERM, /* Requires CAP_NET_ADMIN
+					       *  privilege.
+					       */
 #ifdef HAVE_GENL_OPS_POLICY
 		.policy = meter_policy,
 #endif
@@ -575,9 +575,9 @@ static struct genl_ops dp_meter_genl_ops[] = {
 #ifdef HAVE_GENL_VALIDATE_FLAGS
 		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
 #endif
-		.flags = GENL_ADMIN_PERM, /* Requires CAP_NET_ADMIN
-					   *  privilege.
-					   */
+		.flags = GENL_UNS_ADMIN_PERM, /* Requires CAP_NET_ADMIN
+					       *  privilege.
+					       */
 #ifdef HAVE_GENL_OPS_POLICY
 		.policy = meter_policy,
 #endif
