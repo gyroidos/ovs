@@ -166,7 +166,9 @@ AC_DEFUN([OVS_CHECK_LINUX], [
     fi
     AC_MSG_RESULT([$kversion])
 
-    if test "$version" -ge 5; then
+    if test "$version" -ge 6; then
+          : # Linux 6.x
+    elif test "$version" -ge 5; then
        if test "$version" = 5 && test "$patchlevel" -le 5; then
           : # Linux 5.x
        else
@@ -766,6 +768,12 @@ AC_DEFUN([OVS_CHECK_LINUX_COMPAT], [
   OVS_FIND_PARAM_IFELSE([$KSRC/include/linux/netdevice.h],
                         [dev_change_flags], [extack],
                         [OVS_DEFINE([HAVE_DEV_CHANGE_FLAGS_TAKES_EXTACK])])
+  OVS_GREP_IFELSE([$KSRC/include/linux/netdevice.h],
+                  [dev_get_tstats64(], [OVS_DEFINE([HAVE_DEV_GET_TSTATS64])])
+  OVS_GREP_IFELSE([$KSRC/include/linux/netdevice.h],
+                  [dev_sw_netstats_rx_add(], [OVS_DEFINE([HAVE_DEV_SW_NETSTATS_RX_ADD])])
+  OVS_GREP_IFELSE([$KSRC/include/linux/netdevice.h],
+                  [dev_sw_netstats_tx_add(], [OVS_DEFINE([HAVE_DEV_SW_NETSTATS_TX_ADD])])
 
   OVS_GREP_IFELSE([$KSRC/include/linux/netfilter.h], [nf_hook_state])
   OVS_FIND_FIELD_IFELSE([$KSRC/include/linux/netfilter.h], [nf_hook_state],
@@ -1115,6 +1123,10 @@ AC_DEFUN([OVS_CHECK_LINUX_COMPAT], [
                   [OVS_DEFINE([HAVE_OVERFLOW_H])])
   OVS_GREP_IFELSE([$KSRC/include/linux/overflow.h], [struct_size],
                   [OVS_DEFINE([HAVE_STRUCT_SIZE])])
+  OVS_GREP_IFELSE([$KSRC/include/linux/slab.h], [kvmalloc_array],
+                  [OVS_DEFINE([HAVE_KVMALLOC_ARRAY])])
+  OVS_GREP_IFELSE([$KSRC/include/linux/slab.h], [kvmalloc_node],
+                  [OVS_DEFINE([HAVE_KVMALLOC_NODE])])
   OVS_GREP_IFELSE([$KSRC/include/linux/mm.h], [kvmalloc_array],
                   [OVS_DEFINE([HAVE_KVMALLOC_ARRAY])])
   OVS_GREP_IFELSE([$KSRC/include/linux/mm.h], [kvmalloc_node],

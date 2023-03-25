@@ -13,6 +13,7 @@
 #include <asm/unaligned.h>
 
 #include <linux/delay.h>
+#include <linux/ethtool.h>
 #include <linux/if.h>
 #include <linux/if_vlan.h>
 #include <linux/ip.h>
@@ -1837,7 +1838,11 @@ static const struct net_device_ops stt_netdev_ops = {
 	.ndo_open               = stt_open,
 	.ndo_stop               = stt_stop,
 	.ndo_start_xmit         = stt_dev_xmit,
+#ifdef HAVE_DEV_GET_TSTATS64
+	.ndo_get_stats64        = dev_get_tstats64,
+#else
 	.ndo_get_stats64        = ip_tunnel_get_stats64,
+#endif
 #ifdef  HAVE_RHEL7_MAX_MTU
 	.ndo_size		= sizeof(struct net_device_ops),
 	.extended.ndo_change_mtu = stt_change_mtu,

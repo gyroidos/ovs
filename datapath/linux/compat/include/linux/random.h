@@ -3,6 +3,10 @@
 
 #include_next <linux/random.h>
 
+#ifndef random32
+#define random32()		get_random_u32()
+#endif
+
 #ifndef HAVE_PRANDOM_U32
 #define prandom_u32()		random32()
 #endif

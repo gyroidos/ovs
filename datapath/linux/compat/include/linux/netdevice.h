@@ -1,6 +1,7 @@
 #ifndef __LINUX_NETDEVICE_WRAPPER_H
 #define __LINUX_NETDEVICE_WRAPPER_H 1
 
+#include_next <linux/u64_stats_sync.h>
 #include_next <linux/netdevice.h>
 #include <linux/if_bridge.h>
 

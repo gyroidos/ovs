@@ -231,6 +231,9 @@ EXPORT_SYMBOL_GPL(ovs_skb_is_encapsulated);
 void ovs_ip_tunnel_rcv(struct net_device *dev, struct sk_buff *skb,
 		       struct metadata_dst *tun_dst)
 {
+#ifdef HAVE_DEV_SW_NETSTATS_RX_ADD
+	dev_sw_netstats_rx_add(dev, skb->len);
+#else
 	struct pcpu_sw_netstats *tstats;
 
 	tstats = this_cpu_ptr((struct pcpu_sw_netstats __percpu *)dev->tstats);
@@ -238,6 +241,7 @@ void ovs_ip_tunnel_rcv(struct net_device *dev, struct sk_buff *skb,
 	tstats->rx_packets++;
 	tstats->rx_bytes += skb->len;
 	u64_stats_update_end(&tstats->syncp);
+#endif
 
 	skb_reset_mac_header(skb);
 	skb_scrub_packet(skb, false);
@@ -274,6 +278,7 @@ static void netdev_stats_to_stats64(struct rtnl_link_stats64 *stats64,
 }
 #endif
 
+#ifndef HAVE_DEV_GET_TSTATS64
 #if !defined(HAVE_VOID_NDO_GET_STATS64) && !defined(HAVE_RHEL7_MAX_MTU)
 struct rtnl_link_stats64 *rpl_ip_tunnel_get_stats64(struct net_device *dev,
 						struct rtnl_link_stats64 *tot)
@@ -310,6 +315,7 @@ void rpl_ip_tunnel_get_stats64(struct net_device *dev,
 	return tot;
 #endif
 }
+#endif /* HAVE_DEV_GET_TSTATS64 */
 
 void rpl_ip6tunnel_xmit(struct sock *sk, struct sk_buff *skb,
 		    struct net_device *dev)

@@ -3,7 +3,12 @@
 
 #include <linux/version.h>
 
-#if defined(HAVE_U64_STATS_FETCH_BEGIN_IRQ) && \
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
+#include_next <linux/u64_stats_sync.h>
+
+#define u64_stats_fetch_begin_irq	 u64_stats_fetch_begin
+#define u64_stats_fetch_retry_irq	 u64_stats_fetch_retry
+#elif defined(HAVE_U64_STATS_FETCH_BEGIN_IRQ) && \
     LINUX_VERSION_CODE >= KERNEL_VERSION(3,13,0)
 #include_next <linux/u64_stats_sync.h>
 #else

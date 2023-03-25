@@ -18,6 +18,7 @@
 #include <linux/version.h>
 
 #include <linux/etherdevice.h>
+#include <linux/ethtool.h>
 #include <linux/in.h>
 #include <linux/ip.h>
 #include <linux/net.h>
@@ -542,7 +543,11 @@ EXPORT_SYMBOL_GPL(ovs_lisp_fill_metadata_dst);
 static const struct net_device_ops lisp_netdev_ops = {
 	.ndo_init               = lisp_init,
 	.ndo_uninit             = lisp_uninit,
+#ifdef HAVE_DEV_GET_TSTATS64
+	.ndo_get_stats64        = dev_get_tstats64,
+#else
 	.ndo_get_stats64        = ip_tunnel_get_stats64,
+#endif
 	.ndo_open               = lisp_open,
 	.ndo_stop               = lisp_stop,
 	.ndo_start_xmit         = lisp_dev_xmit,

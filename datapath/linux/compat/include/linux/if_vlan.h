@@ -63,7 +63,8 @@ static inline struct sk_buff *rpl_vlan_insert_tag_set_proto(struct sk_buff *skb,
 #define __vlan_hwaccel_clear_tag rpl_vlan_hwaccel_clear_tag
 static inline void rpl_vlan_hwaccel_clear_tag(struct sk_buff *skb)
 {
-#ifdef HAVE_SKBUFF_VLAN_PRESENT
+#if defined HAVE_SKBUFF_VLAN_PRESENT && \
+    LINUX_VERSION_CODE <= KERNEL_VERSION(6,0,0)
 	skb->vlan_present = 0;
 #else
 	skb->vlan_tci = 0;
