@@ -19,6 +19,7 @@
 
 #include <net/netlink.h>
 #include <net/genetlink.h>
+#include <linux/u64_stats_sync.h>
 #include <linux/mm.h>
 
 #include "datapath.h"

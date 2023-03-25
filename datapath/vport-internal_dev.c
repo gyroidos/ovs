@@ -54,12 +54,16 @@ internal_dev_xmit(struct sk_buff *skb, struct net_device *netdev)
 	rcu_read_unlock();
 
 	if (likely(!err)) {
+#ifdef HAVE_DEV_SW_NETSTATS_TX_ADD
+		dev_sw_netstats_tx_add(netdev, 1, len);
+#else
 		struct pcpu_sw_netstats *tstats = this_cpu_ptr(netdev->tstats);
 
 		u64_stats_update_begin(&tstats->syncp);
 		tstats->tx_bytes += len;
 		tstats->tx_packets++;
 		u64_stats_update_end(&tstats->syncp);
+#endif
 	} else {
 		netdev->stats.tx_errors++;
 	}
@@ -119,6 +123,7 @@ static void internal_dev_destructor(struct net_device *dev)
 #endif
 }
 
+#ifndef HAVE_DEV_GET_TSTATS64
 static void
 internal_get_stats(struct net_device *dev, struct rtnl_link_stats64 *stats)
 {
@@ -148,6 +153,7 @@ internal_get_stats(struct net_device *dev, struct rtnl_link_stats64 *stats)
 		stats->tx_packets       += local_stats.tx_packets;
 	}
 }
+#endif
 
 static const struct net_device_ops internal_dev_netdev_ops = {
 	.ndo_open = internal_dev_open,
@@ -157,7 +163,11 @@ static const struct net_device_ops internal_dev_netdev_ops = {
 #if	!defined(HAVE_NET_DEVICE_WITH_MAX_MTU) && !defined(HAVE_RHEL7_MAX_MTU)
 	.ndo_change_mtu = internal_dev_change_mtu,
 #endif
+#ifdef HAVE_DEV_GET_TSTATS64
+	.ndo_get_stats64 = dev_get_tstats64,
+#else
 	.ndo_get_stats64 = (void *)internal_get_stats,
+#endif
 };
 
 static struct rtnl_link_ops internal_dev_link_ops __read_mostly = {
@@ -272,7 +282,9 @@ static void internal_dev_destroy(struct vport *vport)
 static netdev_tx_t internal_dev_recv(struct sk_buff *skb)
 {
 	struct net_device *netdev = skb->dev;
+#ifndef HAVE_DEV_SW_NETSTATS_RX_ADD
 	struct pcpu_sw_netstats *stats;
+#endif
 
 	if (unlikely(!(netdev->flags & IFF_UP))) {
 		kfree_skb(skb);
@@ -288,11 +300,15 @@ static netdev_tx_t internal_dev_recv(struct sk_buff *skb)
 	skb->protocol = eth_type_trans(skb, netdev);
 	skb_postpull_rcsum(skb, eth_hdr(skb), ETH_HLEN);
 
+#ifdef HAVE_DEV_SW_NETSTATS_RX_ADD
+	dev_sw_netstats_rx_add(netdev, skb->len);
+#else
 	stats = this_cpu_ptr(netdev->tstats);
 	u64_stats_update_begin(&stats->syncp);
 	stats->rx_packets++;
 	stats->rx_bytes += skb->len;
 	u64_stats_update_end(&stats->syncp);
+#endif
 
 	netif_rx(skb);
 	return NETDEV_TX_OK;
