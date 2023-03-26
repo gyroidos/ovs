@@ -594,7 +594,7 @@ struct genl_family dp_meter_genl_family __ro_after_init = {
 	.name = OVS_METER_FAMILY,
 	.version = OVS_METER_VERSION,
 	.maxattr = OVS_METER_ATTR_MAX,
-#ifndef HAVE_GENL_OPS_POLICY
+#ifdef HAVE_GENL_OPS_POLICY
 	.policy = meter_policy,
 #endif
 	.netnsok = true,

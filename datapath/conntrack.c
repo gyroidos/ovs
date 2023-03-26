@@ -2351,7 +2351,7 @@ struct genl_family dp_ct_limit_genl_family __ro_after_init = {
 	.name = OVS_CT_LIMIT_FAMILY,
 	.version = OVS_CT_LIMIT_VERSION,
 	.maxattr = OVS_CT_LIMIT_ATTR_MAX,
-#ifndef HAVE_GENL_OPS_POLICY
+#ifdef HAVE_GENL_OPS_POLICY
 	.policy = ct_limit_policy,
 #endif
 	.netnsok = true,
