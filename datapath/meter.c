@@ -601,6 +601,9 @@ struct genl_family dp_meter_genl_family __ro_after_init = {
 	.parallel_ops = true,
 	.ops = dp_meter_genl_ops,
 	.n_ops = ARRAY_SIZE(dp_meter_genl_ops),
+#ifdef HAVE_GENL_FAMILY_RESV_START_OP
+	.resv_start_op = OVS_METER_CMD_GET + 1,
+#endif
 	.mcgrps = &ovs_meter_multicast_group,
 	.n_mcgrps = 1,
 	.module = THIS_MODULE,

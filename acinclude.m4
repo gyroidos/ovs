@@ -1143,6 +1143,9 @@ AC_DEFUN([OVS_CHECK_LINUX_COMPAT], [
   OVS_FIND_FIELD_IFELSE([$KSRC/include/net/genetlink.h], [genl_ops],
                         [policy],
                         [OVS_DEFINE([HAVE_GENL_OPS_POLICY])])
+  OVS_FIND_FIELD_IFELSE([$KSRC/include/net/genetlink.h], [genl_family],
+                        [resv_start_op],
+                        [OVS_DEFINE([HAVE_GENL_FAMILY_RESV_START_OP])])
   OVS_GREP_IFELSE([$KSRC/include/net/netlink.h],
                   [nla_parse_deprecated_strict],
                   [OVS_DEFINE([HAVE_NLA_PARSE_DEPRECATED_STRICT])])
