@@ -5,6 +5,10 @@
 #include_next <linux/netdevice.h>
 #include <linux/if_bridge.h>
 
+#ifdef HAVE_GSO_H
+#include <net/gso.h>
+#endif
+
 struct net;
 
 #include <linux/version.h>
