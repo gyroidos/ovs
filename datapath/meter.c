@@ -93,7 +93,11 @@ ovs_meter_cmd_reply_start(struct genl_info *info, u8 cmd,
 			  struct ovs_header **ovs_reply_header)
 {
 	struct sk_buff *skb;
+#ifdef HAVE_GENL_INFO_USERHDR
 	struct ovs_header *ovs_header = info->userhdr;
+#else
+	struct ovs_header *ovs_header = genl_info_userhdr(info);
+#endif /* HAVE_GENL_INFO_USERHDR */
 
 	skb = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_ATOMIC);
 	if (!skb)
@@ -289,7 +293,11 @@ static int ovs_meter_cmd_set(struct sk_buff *skb, struct genl_info *info)
 	struct dp_meter *meter, *old_meter;
 	struct sk_buff *reply;
 	struct ovs_header *ovs_reply_header;
+#ifdef HAVE_GENL_INFO_USERHDR
 	struct ovs_header *ovs_header = info->userhdr;
+#else
+	struct ovs_header *ovs_header = genl_info_userhdr(info);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	struct datapath *dp;
 	int err;
 	u32 meter_id;
@@ -356,7 +364,11 @@ static int ovs_meter_cmd_get(struct sk_buff *skb, struct genl_info *info)
 {
 	struct nlattr **a = info->attrs;
 	u32 meter_id;
+#ifdef HAVE_GENL_INFO_USERHDR
 	struct ovs_header *ovs_header = info->userhdr;
+#else
+	struct ovs_header *ovs_header = genl_info_userhdr(info);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	struct ovs_header *ovs_reply_header;
 	struct datapath *dp;
 	int err;
@@ -409,7 +421,11 @@ static int ovs_meter_cmd_del(struct sk_buff *skb, struct genl_info *info)
 {
 	struct nlattr **a = info->attrs;
 	u32 meter_id;
+#ifdef HAVE_GENL_INFO_USERHDR
 	struct ovs_header *ovs_header = info->userhdr;
+#else
+	struct ovs_header *ovs_header = genl_info_userhdr(info);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	struct ovs_header *ovs_reply_header;
 	struct datapath *dp;
 	int err;

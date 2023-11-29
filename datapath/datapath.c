@@ -575,7 +575,11 @@ out:
 
 static int ovs_packet_cmd_execute(struct sk_buff *skb, struct genl_info *info)
 {
+#ifdef HAVE_GENL_INFO_USERHDR
 	struct ovs_header *ovs_header = info->userhdr;
+#else
+	struct ovs_header *ovs_header = genl_info_userhdr(info);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	struct net *net = sock_net(skb->sk);
 	struct nlattr **a = info->attrs;
 	struct sw_flow_actions *acts;
@@ -954,7 +958,11 @@ static int ovs_flow_cmd_new(struct sk_buff *skb, struct genl_info *info)
 {
 	struct net *net = sock_net(skb->sk);
 	struct nlattr **a = info->attrs;
+#ifdef HAVE_GENL_INFO_USERHDR
 	struct ovs_header *ovs_header = info->userhdr;
+#else
+	struct ovs_header *ovs_header = genl_info_userhdr(info);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	struct sw_flow *flow = NULL, *new_flow;
 	struct sw_flow_mask mask;
 	struct sk_buff *reply;
@@ -1193,7 +1201,11 @@ static int ovs_flow_cmd_set(struct sk_buff *skb, struct genl_info *info)
 {
 	struct net *net = sock_net(skb->sk);
 	struct nlattr **a = info->attrs;
+#ifdef HAVE_GENL_INFO_USERHDR
 	struct ovs_header *ovs_header = info->userhdr;
+#else
+	struct ovs_header *ovs_header = genl_info_userhdr(info);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	struct sw_flow_key key;
 	struct sw_flow *flow;
 	struct sk_buff *reply = NULL;
@@ -1294,7 +1306,11 @@ error:
 static int ovs_flow_cmd_get(struct sk_buff *skb, struct genl_info *info)
 {
 	struct nlattr **a = info->attrs;
+#ifdef HAVE_GENL_INFO_USERHDR
 	struct ovs_header *ovs_header = info->userhdr;
+#else
+	struct ovs_header *ovs_header = genl_info_userhdr(info);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	struct net *net = sock_net(skb->sk);
 	struct sw_flow_key key;
 	struct sk_buff *reply;
@@ -1353,7 +1369,11 @@ unlock:
 static int ovs_flow_cmd_del(struct sk_buff *skb, struct genl_info *info)
 {
 	struct nlattr **a = info->attrs;
+#ifdef HAVE_GENL_INFO_USERHDR
 	struct ovs_header *ovs_header = info->userhdr;
+#else
+	struct ovs_header *ovs_header = genl_info_userhdr(info);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	struct net *net = sock_net(skb->sk);
 	struct sw_flow_key key;
 	struct sk_buff *reply;
@@ -1628,7 +1648,11 @@ static void ovs_dp_reset_user_features(struct sk_buff *skb, struct genl_info *in
 {
 	struct datapath *dp;
 
+#ifdef HAVE_GENL_INFO_USERHDR
 	dp = lookup_datapath(sock_net(skb->sk), info->userhdr, info->attrs);
+#else
+	dp = lookup_datapath(sock_net(skb->sk), genl_info_userhdr(info), info->attrs);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	if (IS_ERR(dp))
 		return;
 
@@ -1789,7 +1813,11 @@ static int ovs_dp_cmd_del(struct sk_buff *skb, struct genl_info *info)
 		return -ENOMEM;
 
 	ovs_lock();
+#ifdef HAVE_GENL_INFO_USERHDR
 	dp = lookup_datapath(sock_net(skb->sk), info->userhdr, info->attrs);
+#else
+	dp = lookup_datapath(sock_net(skb->sk), genl_info_userhdr(info), info->attrs);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	err = PTR_ERR(dp);
 	if (IS_ERR(dp))
 		goto err_unlock_free;
@@ -1821,7 +1849,11 @@ static int ovs_dp_cmd_set(struct sk_buff *skb, struct genl_info *info)
 		return -ENOMEM;
 
 	ovs_lock();
+#ifdef HAVE_GENL_INFO_USERHDR
 	dp = lookup_datapath(sock_net(skb->sk), info->userhdr, info->attrs);
+#else
+	dp = lookup_datapath(sock_net(skb->sk), genl_info_userhdr(info), info->attrs);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	err = PTR_ERR(dp);
 	if (IS_ERR(dp))
 		goto err_unlock_free;
@@ -1854,7 +1886,11 @@ static int ovs_dp_cmd_get(struct sk_buff *skb, struct genl_info *info)
 		return -ENOMEM;
 
 	ovs_lock();
+#ifdef HAVE_GENL_INFO_USERHDR
 	dp = lookup_datapath(sock_net(skb->sk), info->userhdr, info->attrs);
+#else
+	dp = lookup_datapath(sock_net(skb->sk), genl_info_userhdr(info), info->attrs);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	if (IS_ERR(dp)) {
 		err = PTR_ERR(dp);
 		goto err_unlock_free;
@@ -2105,7 +2141,11 @@ static void update_headroom(struct datapath *dp)
 static int ovs_vport_cmd_new(struct sk_buff *skb, struct genl_info *info)
 {
 	struct nlattr **a = info->attrs;
+#ifdef HAVE_GENL_INFO_USERHDR
 	struct ovs_header *ovs_header = info->userhdr;
+#else
+	struct ovs_header *ovs_header = genl_info_userhdr(info);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	struct vport_parms parms;
 	struct sk_buff *reply;
 	struct vport *vport;
@@ -2200,7 +2240,11 @@ static int ovs_vport_cmd_set(struct sk_buff *skb, struct genl_info *info)
 		return -ENOMEM;
 
 	ovs_lock();
+#ifdef HAVE_GENL_INFO_USERHDR
 	vport = lookup_vport(sock_net(skb->sk), info->userhdr, a);
+#else
+	vport = lookup_vport(sock_net(skb->sk), genl_info_userhdr(info), a);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	err = PTR_ERR(vport);
 	if (IS_ERR(vport))
 		goto exit_unlock_free;
@@ -2254,7 +2298,11 @@ static int ovs_vport_cmd_del(struct sk_buff *skb, struct genl_info *info)
 		return -ENOMEM;
 
 	ovs_lock();
+#ifdef HAVE_GENL_INFO_USERHDR
 	vport = lookup_vport(sock_net(skb->sk), info->userhdr, a);
+#else
+	vport = lookup_vport(sock_net(skb->sk), genl_info_userhdr(info), a);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	err = PTR_ERR(vport);
 	if (IS_ERR(vport))
 		goto exit_unlock_free;
@@ -2293,7 +2341,11 @@ exit_unlock_free:
 static int ovs_vport_cmd_get(struct sk_buff *skb, struct genl_info *info)
 {
 	struct nlattr **a = info->attrs;
+#ifdef HAVE_GENL_INFO_USERHDR
 	struct ovs_header *ovs_header = info->userhdr;
+#else
+	struct ovs_header *ovs_header = genl_info_userhdr(info);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	struct sk_buff *reply;
 	struct vport *vport;
 	int err;

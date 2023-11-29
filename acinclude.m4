@@ -920,6 +920,8 @@ AC_DEFUN([OVS_CHECK_LINUX_COMPAT], [
   OVS_FIND_PARAM_IFELSE([$KSRC/include/net/genetlink.h],
                         [genl_notify], [net],
                         [OVS_DEFINE([HAVE_GENL_NOTIFY_TAKES_NET])])
+  OVS_FIND_FIELD_IFELSE([$KSRC/include/net/genetlink.h], [genl_info], [userhdr],
+                        [OVS_DEFINE([HAVE_GENL_INFO_USERHDR])])
 
 
   OVS_FIND_FIELD_IFELSE([$KSRC/include/net/genetlink.h],

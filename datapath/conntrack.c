@@ -1984,7 +1984,11 @@ static struct sk_buff *
 ovs_ct_limit_cmd_reply_start(struct genl_info *info, u8 cmd,
 			     struct ovs_header **ovs_reply_header)
 {
+#ifdef HAVE_GENL_INFO_USERHDR
 	struct ovs_header *ovs_header = info->userhdr;
+#else
+	struct ovs_header *ovs_header = genl_info_userhdr(info);
+#endif /* HAVE_GENL_INFO_USERHDR */
 	struct sk_buff *skb;
 
 	skb = genlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
