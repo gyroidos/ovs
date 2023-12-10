@@ -1861,7 +1861,7 @@ static int ovs_dp_cmd_set(struct sk_buff *skb, struct genl_info *info)
 	ovs_dp_change(dp, info->attrs);
 
 	err = ovs_dp_cmd_fill_info(dp, reply, info->snd_portid,
-				   info->snd_seq, 0, OVS_DP_CMD_GET);
+				   info->snd_seq, 0, OVS_DP_CMD_SET);
 	BUG_ON(err < 0);
 
 	ovs_unlock();
