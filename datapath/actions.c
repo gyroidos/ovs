@@ -909,7 +909,11 @@ static void ovs_fragment(struct net *net, struct vport *vport,
 
 		prepare_frag(vport, skb, orig_network_offset,
                              ovs_key_mac_proto(key));
+#ifdef HAVE_DST_INITIAL_REF
 		dst_init(&ovs_dst, &ovs_dst_ops, NULL, 1,
+#else
+		dst_init(&ovs_dst, &ovs_dst_ops, NULL,
+#endif
 			 DST_OBSOLETE_NONE, DST_NOCOUNT);
 		ovs_dst.dev = vport->dev;
 
@@ -930,7 +934,11 @@ static void ovs_fragment(struct net *net, struct vport *vport,
 		prepare_frag(vport, skb, orig_network_offset,
 			     ovs_key_mac_proto(key));
 		memset(&ovs_rt, 0, sizeof(ovs_rt));
+#ifdef HAVE_DST_INITIAL_REF
 		dst_init(&ovs_rt.dst, &ovs_dst_ops, NULL, 1,
+#else
+		dst_init(&ovs_rt.dst, &ovs_dst_ops, NULL,
+#endif
 			 DST_OBSOLETE_NONE, DST_NOCOUNT);
 		ovs_rt.dst.dev = vport->dev;
 

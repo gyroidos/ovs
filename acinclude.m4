@@ -961,6 +961,10 @@ AC_DEFUN([OVS_CHECK_LINUX_COMPAT], [
   OVS_GREP_IFELSE([$KSRC/include/linux/if_vlan.h], [skb_vlan_tagged])
   OVS_GREP_IFELSE([$KSRC/include/linux/if_vlan.h], [eth_type_vlan])
 
+  OVS_FIND_PARAM_IFELSE([$KSRC/include/net/dst.h],
+                        [dst_init], [initial_ref],
+                        [OVS_DEFINE([HAVE_DST_INITIAL_REF])])
+
   OVS_FIND_PARAM_IFELSE([$KSRC/include/net/dst_metadata.h],
                         [metadata_dst_alloc], [metadata_type])
 
