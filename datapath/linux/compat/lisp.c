@@ -569,8 +569,8 @@ static const struct net_device_ops lisp_netdev_ops = {
 static void lisp_get_drvinfo(struct net_device *dev,
 		struct ethtool_drvinfo *drvinfo)
 {
-	strlcpy(drvinfo->version, LISP_NETDEV_VER, sizeof(drvinfo->version));
-	strlcpy(drvinfo->driver, "lisp", sizeof(drvinfo->driver));
+	strscpy(drvinfo->version, LISP_NETDEV_VER, sizeof(drvinfo->version));
+	strscpy(drvinfo->driver, "lisp", sizeof(drvinfo->driver));
 }
 
 static const struct ethtool_ops lisp_ethtool_ops = {
