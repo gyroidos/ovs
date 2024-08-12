@@ -1019,7 +1019,11 @@ netdev_tx_t ovs_stt_xmit(struct sk_buff *skb)
 		goto error;
 	}
 
+#ifdef IP_TUNNEL_DECLARE_FLAGS
+	df = test_bit(IP_TUNNEL_DONT_FRAGMENT_BIT, tun_key->tun_flags) ? htons(IP_DF) : 0;
+#else
 	df = tun_key->tun_flags & TUNNEL_DONT_FRAGMENT ? htons(IP_DF) : 0;
+#endif
 	skb->ignore_df = 1;
 
 	stt_xmit_skb(skb, rt, fl.saddr, tun_key->u.ipv4.dst,
@@ -1423,10 +1427,17 @@ static int __stt_rcv(struct stt_dev *stt_dev, struct sk_buff *skb)
 static int __stt_rcv(struct stt_dev *stt_dev, struct sk_buff *skb)
 {
 	struct metadata_dst *tun_dst;
-	__be16 flags;
 	__be64 tun_id;
 
+#ifdef IP_TUNNEL_DECLARE_FLAGS
+	IP_TUNNEL_DECLARE_FLAGS(flags) = { };
+	__set_bit(IP_TUNNEL_KEY_BIT, flags);
+	__set_bit(IP_TUNNEL_CSUM_BIT, flags);
+#else
+	__be16 flags;
+
 	flags = TUNNEL_KEY | TUNNEL_CSUM;
+#endif
 	tun_id = get_unaligned(&stt_hdr(skb)->key);
 	tun_dst = ip_tun_rx_dst(skb, flags, tun_id, 0);
 	if (!tun_dst)

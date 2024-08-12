@@ -218,6 +218,12 @@ static int lisp_rcv(struct sock *sk, struct sk_buff *skb)
 	__be64 key;
 	struct ethhdr *ethh;
 	__be16 protocol;
+#ifdef IP_TUNNEL_DECLARE_FLAGS
+	IP_TUNNEL_DECLARE_FLAGS(flags) = { };
+	__set_bit(IP_TUNNEL_KEY_BIT, flags);
+#else
+	__be16 flags = TUNNEL_KEY;
+#endif
 
 	dev = rcu_dereference_sk_user_data(sk);
 	if (unlikely(!dev))
@@ -240,7 +246,7 @@ static int lisp_rcv(struct sock *sk, struct sk_buff *skb)
 	tun_dst = &temp;
 	ovs_udp_tun_rx_dst(tun_dst, skb, AF_INET, TUNNEL_KEY, key, 0);
 #else
-	tun_dst = udp_tun_rx_dst(skb, AF_INET, TUNNEL_KEY, key, 0);
+	tun_dst = udp_tun_rx_dst(skb, AF_INET, flags, key, 0);
 #endif
 	/* Drop non-IP inner packets */
 	inner_iph = (struct iphdr *)(lisph + 1);
@@ -387,7 +393,11 @@ netdev_tx_t rpl_lisp_xmit(struct sk_buff *skb)
 
 	ovs_skb_set_inner_protocol(skb, skb->protocol);
 
+#ifdef IP_TUNNEL_DECLARE_FLAGS
+	df = test_bit(IP_TUNNEL_DONT_FRAGMENT_BIT, tun_key->tun_flags) ? htons(IP_DF) : 0;
+#else
 	df = tun_key->tun_flags & TUNNEL_DONT_FRAGMENT ? htons(IP_DF) : 0;
+#endif
 	udp_tunnel_xmit_skb(rt, sock->sk, skb,
 			    fl.saddr, tun_key->u.ipv4.dst,
 			    tun_key->tos, tun_key->ttl,
