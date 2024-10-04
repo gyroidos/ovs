@@ -1537,7 +1537,11 @@ static const struct net_device_ops vxlan_netdev_ether_ops = {
 	.ndo_open		= vxlan_open,
 	.ndo_stop		= vxlan_stop,
 	.ndo_start_xmit		= vxlan_dev_xmit,
+#ifdef HAVE_DEV_GET_TSTATS64
+	.ndo_get_stats64	= dev_get_tstats64,
+#else
 	.ndo_get_stats64	= ip_tunnel_get_stats64,
+#endif
 	.ndo_set_rx_mode	= vxlan_set_multicast_list,
 #ifdef	HAVE_RHEL7_MAX_MTU
 	.ndo_size		= sizeof(struct net_device_ops),
@@ -1558,7 +1562,11 @@ static const struct net_device_ops vxlan_netdev_raw_ops = {
 	.ndo_open		= vxlan_open,
 	.ndo_stop		= vxlan_stop,
 	.ndo_start_xmit		= vxlan_dev_xmit,
+#ifdef HAVE_DEV_GET_TSTATS64
+	.ndo_get_stats64	= dev_get_tstats64,
+#else
 	.ndo_get_stats64	= ip_tunnel_get_stats64,
+#endif
 #ifdef	HAVE_RHEL7_MAX_MTU
 	.ndo_size		= sizeof(struct net_device_ops),
 	.extended.ndo_change_mtu = vxlan_change_mtu,
