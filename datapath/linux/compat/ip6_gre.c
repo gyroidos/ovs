@@ -1425,7 +1425,11 @@ static const struct net_device_ops ip6gre_netdev_ops = {
 #else
 	.ndo_change_mtu		= ip6_tnl_change_mtu,
 #endif
+#ifdef HAVE_DEV_GET_TSTATS64
+	.ndo_get_stats64	= dev_get_tstats64,
+#else
 	.ndo_get_stats64	= ip_tunnel_get_stats64,
+#endif
 #ifdef HAVE_NDO_GET_IFLINK
 	.ndo_get_iflink		= ip6_tnl_get_iflink,
 #endif
@@ -1917,7 +1921,11 @@ static const struct net_device_ops ip6gre_tap_netdev_ops = {
 #else
 	.ndo_change_mtu = ip6_tnl_change_mtu,
 #endif
+#ifdef HAVE_DEV_GET_TSTATS64
+	.ndo_get_stats64 = dev_get_tstats64,
+#else
 	.ndo_get_stats64 = ip_tunnel_get_stats64,
+#endif
 #ifdef HAVE_NDO_GET_IFLINK
 	.ndo_get_iflink = ip6_tnl_get_iflink,
 #endif
@@ -1985,7 +1993,11 @@ static const struct net_device_ops ip6erspan_netdev_ops = {
 #else
 	.ndo_change_mtu =	ip6_tnl_change_mtu,
 #endif
+#ifdef HAVE_DEV_GET_TSTATS64
+	.ndo_get_stats64 =	dev_get_tstats64,
+#else
 	.ndo_get_stats64 =	ip_tunnel_get_stats64,
+#endif
 #ifdef HAVE_NDO_GET_IFLINK
 	.ndo_get_iflink =	ip6_tnl_get_iflink,
 #endif

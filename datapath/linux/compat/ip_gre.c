@@ -934,7 +934,11 @@ static const struct net_device_ops gre_tap_netdev_ops = {
 #else
 	.ndo_change_mtu		= ip_tunnel_change_mtu,
 #endif
+#ifdef HAVE_DEV_GET_TSTATS64
+	.ndo_get_stats64	= dev_get_tstats64,
+#else
 	.ndo_get_stats64	= ip_tunnel_get_stats64,
+#endif
 #ifdef HAVE_NDO_GET_IFLINK
 	.ndo_get_iflink		= rpl_ip_tunnel_get_iflink,
 #endif
@@ -955,7 +959,11 @@ static const struct net_device_ops erspan_netdev_ops = {
 #else
 	.ndo_change_mtu		= ip_tunnel_change_mtu,
 #endif
+#ifdef HAVE_DEV_GET_TSTATS64
+	.ndo_get_stats64	= dev_get_tstats64,
+#else
 	.ndo_get_stats64	= ip_tunnel_get_stats64,
+#endif
 #ifdef HAVE_NDO_GET_IFLINK
 	.ndo_get_iflink		= rpl_ip_tunnel_get_iflink,
 #endif
