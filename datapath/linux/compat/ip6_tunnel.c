@@ -145,6 +145,7 @@ struct ip6_tnl_net {
 	struct ip6_tnl __rcu *collect_md_tun;
 };
 
+#ifndef HAVE_DEV_GET_TSTATS64
 static struct net_device_stats *ip6_get_stats(struct net_device *dev)
 {
 	struct pcpu_sw_netstats tmp, sum = { 0 };
@@ -174,6 +175,7 @@ static struct net_device_stats *ip6_get_stats(struct net_device *dev)
 	dev->stats.tx_bytes   = sum.tx_bytes;
 	return &dev->stats;
 }
+#endif
 
 /**
  * ip6_tnl_lookup - fetch tunnel matching the end-point addresses
@@ -1618,7 +1620,11 @@ static const struct net_device_ops ip6_tnl_netdev_ops = {
 #else
 	.ndo_change_mtu = ip6_tnl_change_mtu,
 #endif
-	.ndo_get_stats	= ip6_get_stats,
+#ifdef HAVE_DEV_GET_TSTATS64
+	.ndo_get_stats64 = dev_get_tstats64,
+#else
+	.ndo_get_stats = ip6_get_stats,
+#endif
 #ifdef HAVE_NDO_GET_IFLINK
 	.ndo_get_iflink = ip6_tnl_get_iflink,
 #endif
