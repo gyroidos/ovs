@@ -317,6 +317,7 @@ void rpl_ip_tunnel_get_stats64(struct net_device *dev,
 }
 #endif /* HAVE_DEV_GET_TSTATS64 */
 
+#ifndef USE_UPSTREAM_TUNNEL
 void rpl_ip6tunnel_xmit(struct sock *sk, struct sk_buff *skb,
 		    struct net_device *dev)
 {
@@ -334,3 +335,4 @@ void rpl_ip6tunnel_xmit(struct sock *sk, struct sk_buff *skb,
 	iptunnel_xmit_stats(dev, pkt_len);
 }
 EXPORT_SYMBOL_GPL(rpl_ip6tunnel_xmit);
+#endif /* USE_UPSTREAM_TUNNEL */
