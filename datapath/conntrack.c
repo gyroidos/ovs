@@ -1950,8 +1950,12 @@ static int ovs_ct_limit_init(struct net *net, struct ovs_net *ovs_net)
 	for (i = 0; i < CT_LIMIT_HASH_BUCKETS; i++)
 		INIT_HLIST_HEAD(&ovs_net->ct_limit_info->limits[i]);
 
+#ifdef HAVE_NF_CONNCOUNT_INIT_FAMILY
 	ovs_net->ct_limit_info->data =
 		nf_conncount_init(net, NFPROTO_INET, sizeof(u32));
+#else
+	ovs_net->ct_limit_info->data = nf_conncount_init(net, sizeof(u32));
+#endif
 
 	if (IS_ERR(ovs_net->ct_limit_info->data)) {
 		err = PTR_ERR(ovs_net->ct_limit_info->data);
@@ -1968,7 +1972,11 @@ static void ovs_ct_limit_exit(struct net *net, struct ovs_net *ovs_net)
 	const struct ovs_ct_limit_info *info = ovs_net->ct_limit_info;
 	int i;
 
+#ifdef HAVE_NF_CONNCOUNT_INIT_FAMILY
 	nf_conncount_destroy(net, NFPROTO_INET, info->data);
+#else
+	nf_conncount_destroy(net, info->data);
+#endif
 	for (i = 0; i < CT_LIMIT_HASH_BUCKETS; ++i) {
 		struct hlist_head *head = &info->limits[i];
 		struct ovs_ct_limit *ct_limit;

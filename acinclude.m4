@@ -817,6 +817,9 @@ AC_DEFUN([OVS_CHECK_LINUX_COMPAT], [
                   [OVS_GREP_IFELSE([$KSRC/include/net/netfilter/nf_conntrack_count.h],
                                    [int nf_conncount_add],
                                    [OVS_DEFINE([HAVE_UPSTREAM_NF_CONNCOUNT])])])
+  OVS_FIND_PARAM_IFELSE([$KSRC/include/net/netfilter/nf_conntrack_count.h],
+                  [nf_conncount_init], [unsigned int family],
+                  [OVS_DEFINE([HAVE_NF_CONNCOUNT_INIT_FAMILY])])
   OVS_GREP_IFELSE([$KSRC/include/net/netfilter/nf_conntrack_timeout.h], [nf_ct_set_timeout])
   OVS_GREP_IFELSE([$KSRC/include/net/netfilter/nf_conntrack_timeout.h], [struct nf_ct_timeout],
                   [OVS_DEFINE([HAVE_NF_CT_TIMEOUT])])
