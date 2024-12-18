@@ -1011,6 +1011,9 @@ AC_DEFUN([OVS_CHECK_LINUX_COMPAT], [
   OVS_FIND_FIELD_IFELSE([$KSRC/include/linux/netdevice.h], [net_device],
                         [lltx],
                         [OVS_DEFINE([HAVE_NETDEV_LLTX])])
+  OVS_FIND_FIELD_IFELSE([$KSRC/include/linux/netdevice.h], [net_device],
+                        [netns_local],
+                        [OVS_DEFINE([HAVE_NETDEV_NETNS_LOCAL])])
   OVS_FIND_FIELD_IFELSE([$KSRC/include/net/vxlan.h], [vxlan_dev], [cfg],
                         [OVS_DEFINE([HAVE_VXLAN_DEV_CFG])])
   OVS_GREP_IFELSE([$KSRC/include/net/netfilter/nf_conntrack_helper.h],

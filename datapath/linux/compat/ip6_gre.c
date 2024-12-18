@@ -1534,7 +1534,11 @@ static int ip6gre_tunnel_init_common(struct net_device *dev)
 		dev->mtu -= 8;
 
 	if (tunnel->parms.collect_md) {
+#ifdef HAVE_NETDEV_NETNS_LOCAL
+		dev->netns_local = true;
+#else
 		dev->features |= NETIF_F_NETNS_LOCAL;
+#endif
 		netif_keep_dst(dev);
 	}
 	ip6gre_tnl_init_features(dev);
@@ -1633,8 +1637,11 @@ static int __net_init ip6gre_init_net(struct net *net)
 	/* FB netdevice is special: we have one, and only one per netns.
 	 * Allowing to move it to another netns is clearly unsafe.
 	 */
+#ifdef HAVE_NETDEV_NETNS_LOCAL
+	ign->fb_tunnel_dev->netns_local = true;
+#else
 	ign->fb_tunnel_dev->features |= NETIF_F_NETNS_LOCAL;
-
+#endif
 
 	ip6gre_fb_tunnel_init(ign->fb_tunnel_dev);
 	ign->fb_tunnel_dev->rtnl_link_ops = &ip6gre_link_ops;
@@ -2026,7 +2033,11 @@ static void ip6gre_tap_setup(struct net_device *dev)
 	dev->priv_destructor = ip6gre_dev_free;
 #endif
 
+#ifdef HAVE_NETDEV_NETNS_LOCAL
+	dev->netns_local = true;
+#else
 	dev->features |= NETIF_F_NETNS_LOCAL;
+#endif
 	dev->priv_flags &= ~IFF_TX_SKB_SHARING;
 	dev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
 	netif_keep_dst(dev);
@@ -2361,7 +2372,11 @@ static void ip6erspan_tap_setup(struct net_device *dev)
 	dev->priv_destructor = ip6gre_dev_free;
 #endif
 
+#ifdef HAVE_NETDEV_NETNS_LOCAL
+	dev->netns_local = true;
+#else
 	dev->features |= NETIF_F_NETNS_LOCAL;
+#endif
 	dev->priv_flags &= ~IFF_TX_SKB_SHARING;
 	dev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
 	netif_keep_dst(dev);

@@ -574,8 +574,7 @@ err_free_skb:
 #define GRE_FEATURES	(NETIF_F_SG |		\
 			 NETIF_F_FRAGLIST |	\
 			 NETIF_F_HIGHDMA |	\
-			 NETIF_F_HW_CSUM |	\
-			 NETIF_F_NETNS_LOCAL)
+			 NETIF_F_HW_CSUM)
 
 static void __gre_tunnel_init(struct net_device *dev)
 {
@@ -589,6 +588,12 @@ static void __gre_tunnel_init(struct net_device *dev)
 
 	dev->features		|= GRE_FEATURES;
 	dev->hw_features	|= GRE_FEATURES;
+#ifdef HAVE_NETDEV_NETNS_LOCAL
+	dev->netns_local = true;
+#else
+	dev->features		|= NETIF_F_NETNS_LOCAL;
+	dev->hw_features	|= NETIF_F_NETNS_LOCAL;
+#endif
 
 	if (!(tunnel->parms.o_flags & TUNNEL_SEQ)) {
 		/* TCP offload with GRE SEQ is not supported, nor
@@ -920,6 +925,12 @@ static int erspan_tunnel_init(struct net_device *dev)
 
 	dev->features		|= GRE_FEATURES;
 	dev->hw_features	|= GRE_FEATURES;
+#ifdef HAVE_NETDEV_NETNS_LOCAL
+	dev->netns_local = true;
+#else
+	dev->features		|= NETIF_F_NETNS_LOCAL;
+	dev->hw_features	|= NETIF_F_NETNS_LOCAL;
+#endif
 	dev->priv_flags		|= IFF_LIVE_ADDR_CHANGE;
 	netif_keep_dst(dev);
 

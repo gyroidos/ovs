@@ -1738,7 +1738,11 @@ static int ip6_tnl_dev_init(struct net_device *dev)
 		return err;
 	ip6_tnl_link_config(t);
 	if (t->parms.collect_md) {
+#ifdef HAVE_NETDEV_NETNS_LOCAL
+		dev->netns_local = true;
+#else
 		dev->features |= NETIF_F_NETNS_LOCAL;
+#endif
 		netif_keep_dst(dev);
 	}
 	return 0;
@@ -2113,7 +2117,11 @@ static int __net_init ip6_tnl_init_net(struct net *net)
 	/* FB netdevice is special: we have one, and only one per netns.
 	 * Allowing to move it to another netns is clearly unsafe.
 	 */
+#ifdef HAVE_NETDEV_NETNS_LOCAL
+	ip6n->fb_tnl_dev->netns_local = true;
+#else
 	ip6n->fb_tnl_dev->features |= NETIF_F_NETNS_LOCAL;
+#endif
 
 	err = ip6_fb_tnl_dev_init(ip6n->fb_tnl_dev);
 	if (err < 0)

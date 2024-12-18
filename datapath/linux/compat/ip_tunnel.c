@@ -522,7 +522,11 @@ int rpl_ip_tunnel_init_net(struct net *net, int ip_tnl_net_id,
  * 	 * Allowing to move it to another netns is clearly unsafe.
  * 	 	 */
 	if (!IS_ERR(itn->fb_tunnel_dev)) {
+#ifdef HAVE_NETDEV_NETNS_LOCAL
+		itn->fb_tunnel_dev->netns_local = true;
+#else
 		itn->fb_tunnel_dev->features |= NETIF_F_NETNS_LOCAL;
+#endif
 		itn->fb_tunnel_dev->mtu = ip_tunnel_bind_dev(itn->fb_tunnel_dev);
 		ip_tunnel_add(itn, netdev_priv(itn->fb_tunnel_dev));
 	}
@@ -640,7 +644,11 @@ int rpl_ip_tunnel_init(struct net_device *dev)
 	iph->ihl		= 5;
 
 	if (tunnel->collect_md) {
+#ifdef HAVE_NETDEV_NETNS_LOCAL
+		dev->netns_local = true;
+#else
 		dev->features |= NETIF_F_NETNS_LOCAL;
+#endif
 		netif_keep_dst(dev);
 	}
 	return 0;

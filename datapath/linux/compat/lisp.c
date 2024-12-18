@@ -613,7 +613,11 @@ static void lisp_setup(struct net_device *dev)
 #else
 	dev->features    |= NETIF_F_LLTX;
 #endif
+#ifdef HAVE_NETDEV_NETNS_LOCAL
+	dev->netns_local = true;
+#else
 	dev->features    |= NETIF_F_NETNS_LOCAL;
+#endif
 	dev->features    |= NETIF_F_SG | NETIF_F_HW_CSUM;
 	dev->features    |= NETIF_F_RXCSUM;
 	dev->features    |= NETIF_F_GSO_SOFTWARE;
