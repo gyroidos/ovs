@@ -612,6 +612,9 @@ AC_DEFUN([OVS_CHECK_LINUX_COMPAT], [
 
   OVS_GREP_IFELSE([$KSRC/arch/x86/include/asm/checksum_32.h], [src_err,],
                   [OVS_DEFINE([HAVE_CSUM_COPY_DBG])])
+  OVS_GREP_IFELSE([$KSRC/include/asm-generic/unaligned.h],
+                  [___ASM_GENERIC_UNALIGNED_H],
+                  [OVS_DEFINE([HAVE_ASM_GENERIC_UNALIGNED_H])])
 
   OVS_GREP_IFELSE([$KSRC/include/net/ip6_fib.h], [rt6_get_cookie],
                   [OVS_DEFINE([HAVE_RT6_GET_COOKIE])])

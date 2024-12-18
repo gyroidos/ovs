@@ -10,7 +10,11 @@
  */
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+#ifdef HAVE_ASM_GENERIC_UNALIGNED_H
 #include <asm/unaligned.h>
+#else
+#include <linux/unaligned.h>
+#endif
 
 #include <linux/delay.h>
 #include <linux/ethtool.h>
