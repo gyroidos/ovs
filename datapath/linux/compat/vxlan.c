@@ -1653,7 +1653,11 @@ static void vxlan_setup(struct net_device *dev)
 #endif
 	SET_NETDEV_DEVTYPE(dev, &vxlan_type);
 
+#ifdef HAVE_NETDEV_LLTX
+	dev->lltx = true;
+#else
 	dev->features	|= NETIF_F_LLTX;
+#endif
 	dev->features	|= NETIF_F_SG | NETIF_F_HW_CSUM;
 	dev->features   |= NETIF_F_RXCSUM;
 	dev->features   |= NETIF_F_GSO_SOFTWARE;

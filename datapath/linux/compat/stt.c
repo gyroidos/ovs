@@ -1905,7 +1905,12 @@ static void stt_setup(struct net_device *dev)
 
 	SET_NETDEV_DEVTYPE(dev, &stt_type);
 
-	dev->features    |= NETIF_F_LLTX | NETIF_F_NETNS_LOCAL;
+#ifdef HAVE_NETDEV_LLTX
+	dev->lltx = true;
+#else
+	dev->features    |= NETIF_F_LLTX;
+#endif
+	dev->features    |= NETIF_F_NETNS_LOCAL;
 	dev->features    |= NETIF_F_SG | NETIF_F_HW_CSUM;
 	dev->features    |= NETIF_F_RXCSUM;
 	dev->features    |= NETIF_F_GSO_SOFTWARE;

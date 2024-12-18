@@ -386,7 +386,11 @@ static struct ip6_tnl *ip6gre_tunnel_locate(struct net *net,
 
 	/* Can use a lockless transmit, unless we generate output sequences */
 	if (!(nt->parms.o_flags & TUNNEL_SEQ))
+#ifdef HAVE_NETDEV_LLTX
+		dev->lltx = true;
+#else
 		dev->features |= NETIF_F_LLTX;
+#endif
 
 	dev_hold(dev);
 	ip6gre_tunnel_link(ign, nt);
@@ -1491,7 +1495,11 @@ static void ip6gre_tnl_init_features(struct net_device *dev)
 		/* Can use a lockless transmit, unless we generate
 		 * output sequences
 		 */
+#ifdef HAVE_NETDEV_LLTX
+		dev->lltx = true;
+#else
 		dev->features |= NETIF_F_LLTX;
+#endif
 	}
 }
 

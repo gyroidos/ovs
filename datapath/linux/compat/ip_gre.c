@@ -604,7 +604,11 @@ static void __gre_tunnel_init(struct net_device *dev)
 		/* Can use a lockless transmit, unless we generate
 		 * output sequences
 		 */
+#ifdef HAVE_NETDEV_LLTX
+		dev->lltx = true;
+#else
 		dev->features |= NETIF_F_LLTX;
+#endif
 	}
 }
 

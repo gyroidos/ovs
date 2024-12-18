@@ -201,14 +201,23 @@ static void do_setup(struct net_device *netdev)
 	netdev->tx_queue_len = 0;
 #endif
 
-	netdev->features = NETIF_F_LLTX | NETIF_F_SG | NETIF_F_FRAGLIST |
-			   NETIF_F_HIGHDMA | NETIF_F_HW_CSUM |
-			   NETIF_F_GSO_SOFTWARE | NETIF_F_GSO_ENCAP_ALL;
+	netdev->features = NETIF_F_SG | NETIF_F_FRAGLIST | NETIF_F_HIGHDMA |
+			   NETIF_F_HW_CSUM | NETIF_F_GSO_SOFTWARE |
+			   NETIF_F_GSO_ENCAP_ALL;
 
+#ifdef HAVE_NETDEV_LLTX
+	netdev->lltx = true;
+#else
+	netdev->features |= NETIF_F_LLTX
+#endif
 	netdev->vlan_features = netdev->features;
 	netdev->hw_enc_features = netdev->features;
 	netdev->features |= NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_STAG_TX;
-	netdev->hw_features = netdev->features & ~NETIF_F_LLTX;
+	netdev->hw_features = netdev->features;
+
+#ifndef HAVE_NETDEV_LLTX
+	netdev->hw_features &= ~NETIF_F_LLTX;
+#endif
 
 	eth_hw_addr_random(netdev);
 }
